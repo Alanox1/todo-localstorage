@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import { useState ,useEffect} from 'react';
 import './App.css';
-
+import AñadirElemento from './components/AñadirElemento';
+import TodoList from './components/TodoList';
 function App() {
+  const [tareas,setTareas] = useState([])
+  
+  const listItems = tareas.map((el,index) =>  <TodoList id={index} key={index} tarea={el} tareas={tareas} setTareas={setTareas}/>)
+
+   //Solo se ejecuta la primera vez que el componente es renderizado
+   useEffect(() => {
+    if(localStorage.getItem("tasks")) { //Si existe
+        setTareas(JSON.parse(localStorage.getItem("tasks")))
+    }
+   },[])
+
+   //Se ejecuta cada vez que el state tareas cambie
+   useEffect(() => {
+    localStorage.setItem("tasks",JSON.stringify(tareas))
+   },[tareas])
+
+   
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Todo - LocalStorage</h1>
+      <AñadirElemento tareas={tareas} setTareas={setTareas}/>
+      <ul>
+      {listItems}
+      </ul>
     </div>
   );
 }
